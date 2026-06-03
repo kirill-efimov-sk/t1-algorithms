@@ -1,5 +1,8 @@
 import { Item } from "../../dto";
 import { OrderService } from "..";
+import { BulkQuantityDiscountRule } from "./rules/discount-bulk";
+import type { DiscountRule } from "./rules/types";
+import { GrossDiscountRule, TypeDiscountRule } from "./rules";
 
 interface TestCase {
     type: string;
@@ -25,27 +28,32 @@ const testCases: TestCase[] = [
     },
 ];
 
+const DEFAULT_RULES: DiscountRule[] = [
+  new TypeDiscountRule(),
+  new GrossDiscountRule()
+];
+
 describe('order service test cases', () => {
     let service: OrderService;
     let items: Item[];
 
     beforeEach(() => {
-    service = new OrderService();
+    service = new OrderService(DEFAULT_RULES);
     items = [
-        new Item("Laptop", 98500, 5),
-        new Item("Mouse", 1500, 10)
+        new Item('Laptop', 98500, 5),
+        new Item('Mouse', 1500, 10)
     ];
     });
 
     // positive tests
-    test.each(testCases)('Type: $type; $description', (testCase) => {
+    test.each(testCases)('type: $type; $description', (testCase) => {
         const total = service.calc(items, testCase.type); 
         console.log(total)
         expect(total).toBe(testCase.expected);
     });
 
     test('returns 0 for empty items array', () => {
-        const total = service.calc([], "ANY");
+        const total = service.calc([], 'OTHER');
         expect(total).toBe(0);
     });
     
@@ -54,33 +62,33 @@ describe('order service test cases', () => {
         expect(() => service.calc(items, null as any)).toThrow();
     });
     test('throws error when items is null', () => {
-        expect(() => service.calc(null as any, "ANY")).toThrow();
+        expect(() => service.calc(null as any, 'OTHER')).toThrow();
     });
 
     test('negative price test', () => {
         const invalidItems = [
-            new Item("Keyboard", -100, 5)
-        ];
-        const total = service.calc(invalidItems, "ANY");
-        expect(total).toBe(-500);
-    });
-    test('negative quantity test', () => {
-        const invalidItems = [
-            new Item("Keyboard", 100, -5)
-        ];
-        const total = service.calc(invalidItems, "ANY");
-        expect(total).toBe(-500);
-    });
-
-    // New test
-    test('negative quantity test', () => {
-        const bulkDiscountRule = new BulkQuantityDiscountRule(10, 0.99);
-
-        service.addRule(bulkDiscountRule);
-        const invalidItems = [
-            new Item('Powerbank', 1000, 10)
+            new Item('Keyboard', -100, 5)
         ];
         const total = service.calc(invalidItems, 'OTHER');
-        expect(total).toBe(9900);
+        expect(total).toBe(-500);
+    });
+    test('negative quantity test', () => {
+        const invalidItems = [
+            new Item('Keyboard', 100, -5)
+        ];
+        const total = service.calc(invalidItems, 'OTHER');
+        expect(total).toBe(-500);
+    });
+
+    // Red test
+    test('bulk quantity discount rule test', () => {
+        const bulkDiscountRule = new BulkQuantityDiscountRule(10, 0.99);
+        const service = new OrderService([bulkDiscountRule]);
+
+        const invalidItems = [
+            new Item('Powerbank', 1000, 11)
+        ];
+        const total = service.calc(invalidItems, 'OTHER');
+        expect(total).toBe(10890);
     });
 })

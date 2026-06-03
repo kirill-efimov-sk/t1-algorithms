@@ -3,15 +3,11 @@ import type { Item } from "../../dto";
 import type { DiscountRule } from "./rules/types";
 
 const DEFAULT_PRECISION = 2;
-const DEFAULT_RULES: DiscountRule[] = [
-  new TypeDiscountRule(),
-  new GrossDiscountRule()
-];
 
 export class OrderService {
     private discountRules: DiscountRule[];
 
-    constructor(discountRules: DiscountRule[] = [...DEFAULT_RULES]) {
+    constructor(discountRules: DiscountRule[]) {
         this.discountRules = [...discountRules]; // ensuring immutability
     }
 
