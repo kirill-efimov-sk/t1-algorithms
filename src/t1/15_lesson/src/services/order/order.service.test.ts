@@ -49,7 +49,6 @@ describe('order service test cases', () => {
         expect(total).toBe(0);
     });
     
-
     // negative tests
     test('throws error when type is null', () => {
         expect(() => service.calc(items, null as any)).toThrow();
@@ -71,5 +70,17 @@ describe('order service test cases', () => {
         ];
         const total = service.calc(invalidItems, "ANY");
         expect(total).toBe(-500);
+    });
+
+    // New test
+    test('negative quantity test', () => {
+        const bulkDiscountRule = new BulkQuantityDiscountRule(10, 0.99);
+
+        service.addRule(bulkDiscountRule);
+        const invalidItems = [
+            new Item('Powerbank', 1000, 10)
+        ];
+        const total = service.calc(invalidItems, 'OTHER');
+        expect(total).toBe(9900);
     });
 })
