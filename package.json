@@ -4,7 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "jest"
+        "build": "tsc",
+        "test": "jest",
+        "lint": "eslint . --ext .js,.ts"
     },
     "keywords": [],
     "author": "",
@@ -13,6 +15,9 @@
     "devDependencies": {
         "@types/jest": "^30.0.0",
         "@types/node": "^25.7.0",
+        "@typescript-eslint/eslint-plugin": "^8.60.1",
+        "@typescript-eslint/parser": "^8.60.1",
+        "eslint": "^10.4.1",
         "jest": "^30.4.2",
         "ts-jest": "^29.4.9",
         "typescript": "^6.0.3"
