@@ -1,11 +1,14 @@
-module.exports = [
+import parser from "@typescript-eslint/parser";
+import plugin from "@typescript-eslint/eslint-plugin";
+
+export default [
     {
         files: ["**/*.ts"],
         languageOptions: {
-            parser: require("@typescript-eslint/parser"),
+            parser: parser,
         },
         plugins: {
-            "@typescript-eslint": require("@typescript-eslint/eslint-plugin"),
+            "@typescript-eslint": plugin,
         },
         rules: {
             "@typescript-eslint/no-unused-vars": "warn",
