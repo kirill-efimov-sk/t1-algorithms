@@ -10,8 +10,8 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
-        "module": "CommonJS",
-        "target": "esnext",
+        "module": "ESNext",
+        "target": "ES2022",
         "types": ["node", "jest"],
         // For nodejs:
         "lib": ["esnext"],
